@@ -1,66 +1,68 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { BorrowsController } from './borrows.controller';
-import { BorrowsService } from './borrows.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Borrow, BorrowSchema } from './borrow.schema';
+
+import { BorrowsController } from './presentation/controllers/borrows.controller';
+
+import { BorrowBookUseCase } from './application/use-cases/borrow-book.use-case';
+
+import { MongoBorrowRepository } from './infrastructure/repositories/mongo-borrow.repository';
+import { Borrow, BorrowSchema } from './infrastructure/database/borrow.schema';
+
+import { BORROW_REPOSITORY } from './domain/repositories/repository.tokens';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'NOTIFICATION_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://guest:guest@localhost:5672'],
-          queue: 'notification_queue',
-          queueOptions: {
-            durable: false,
-          },
-        },
-      },
-    ]),
-    ClientsModule.register([
-      {
-        name: 'USER_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 4001,
-        },
-      },
-
-      {
-        name: 'BOOK_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 4002,
-        },
-      },
-
-      {
-        name: 'NOTIFICATION_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://guest:guest@localhost:5672'],
-          queue: 'notification_queue',
-          queueOptions: {
-            durable: false,
-          },
-        },
-      },
-    ]),
-    MongooseModule.forRoot('mongodb://localhost:27017/library'),
-
     MongooseModule.forFeature([
       {
         name: Borrow.name,
         schema: BorrowSchema,
       },
     ]),
+
+    ClientsModule.register([
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: '127.0.0.1',
+          port: 4001,
+        },
+      },
+      {
+        name: 'BOOK_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: '127.0.0.1',
+          port: 4002,
+        },
+      },
+      {
+        name: 'NOTIFICATION_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://guest:guest@localhost:5672'],
+          queue: 'notification_queue',
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
+    ]),
   ],
+
   controllers: [BorrowsController],
-  providers: [BorrowsService],
+
+  providers: [
+    BorrowBookUseCase,
+    MongoBorrowRepository,
+
+    {
+      provide: BORROW_REPOSITORY,
+      useExisting: MongoBorrowRepository,
+    },
+  ],
+
+  exports: [BorrowBookUseCase],
 })
 export class BorrowsModule {}

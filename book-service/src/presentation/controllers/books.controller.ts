@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
-import { BooksService } from './books.service';
+import { BooksService } from '../../books/books.service';
 
 @Controller('books')
 export class BooksController {
@@ -43,5 +43,10 @@ export class BooksController {
   @MessagePattern('get_book')
   getBook(@Payload() id: string) {
     return this.booksService.findOne(id);
+  }
+
+  @MessagePattern('borrow_book')
+  borrowBook(@Payload() id: string) {
+    return this.booksService.borrowBook(id);
   }
 }

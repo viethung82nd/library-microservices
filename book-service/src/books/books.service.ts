@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Book } from './books.schema';
+import { Book } from '../infrastructure/database/books.schema';
 
 @Injectable()
 export class BooksService {
@@ -46,5 +46,13 @@ export class BooksService {
     return {
       message: 'Book deleted',
     };
+  }
+
+  async borrowBook(id: string) {
+    return this.bookModel.findByIdAndUpdate(
+      id,
+      { available: false },
+      { new: true },
+    );
   }
 }
