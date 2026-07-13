@@ -10,23 +10,34 @@ export class UpdateBookUseCase {
     private readonly repository: BookRepository,
   ) {}
 
-  async execute(id: string, title: string, author: string, available: boolean) {
+  async execute(
+    id: string,
+    title?: string,
+    author?: string,
+    available?: boolean,
+  ) {
     const book = await this.repository.findById(id);
 
     if (!book) {
       throw new NotFoundException('Book not found');
     }
 
-    book.rename(title);
-
-    book.changeAuthor(author);
-
-    if (available && !book.available) {
-      book.returnBook();
+    if (title !== undefined) {
+      book.rename(title);
     }
 
-    if (!available && book.available) {
-      book.borrow();
+    if (author !== undefined) {
+      book.changeAuthor(author);
+    }
+
+    if (available !== undefined) {
+      if (available && !book.available) {
+        book.returnBook();
+      }
+
+      if (!available && book.available) {
+        book.borrow();
+      }
     }
 
     return this.repository.update(book);

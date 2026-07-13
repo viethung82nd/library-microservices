@@ -9,12 +9,14 @@ import {
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
+import { CreateBookDto } from '../dto/create-book.dto';
 import { CreateBookUseCase } from '../../application/use-cases/create-book.use-case';
 import { UpdateBookUseCase } from '../../application/use-cases/update-book.use-case';
 import { DeleteBookUseCase } from '../../application/use-cases/delete-book.use-case';
 import { BorrowBookUseCase } from '../../application/use-cases/borrow-book.use-case';
 import { FindBookUseCase } from '../../application/use-cases/find-book.use-case';
 import { FindAllBooksUseCase } from '../../application/use-cases/find-all-books.use-case';
+import { UpdateBookDto } from '../dto/update-book.dto';
 
 @Controller('books')
 export class BooksController {
@@ -39,17 +41,17 @@ export class BooksController {
   }
 
   @Post()
-  create(@Body() body: any) {
-    return this.createBookUseCase.execute(body.title, body.author);
+  create(@Body() dto: CreateBookDto) {
+    return this.createBookUseCase.execute(dto.title, dto.author);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
+  update(@Param('id') id: string, @Body() dto: UpdateBookDto) {
     return this.updateBookUseCase.execute(
       id,
-      body.title,
-      body.author,
-      body.available,
+      dto.title,
+      dto.author,
+      dto.available,
     );
   }
 
