@@ -3,18 +3,34 @@ export class Book {
     public id: string | null,
     public title: string,
     public author: string,
-    public available: boolean = true,
+    private _available: boolean = true,
   ) {}
 
+  get available(): boolean {
+    return this._available;
+  }
+
   borrow() {
-    if (!this.available) {
+    if (!this._available) {
       throw new Error('Book is already borrowed');
     }
 
-    this.available = false;
+    this._available = false;
   }
 
   returnBook() {
-    this.available = true;
+    if (this._available) {
+      throw new Error('Book is already available');
+    }
+
+    this._available = true;
+  }
+
+  rename(title: string) {
+    this.title = title;
+  }
+
+  changeAuthor(author: string) {
+    this.author = author;
   }
 }
