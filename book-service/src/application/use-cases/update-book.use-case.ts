@@ -2,6 +2,8 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import type { BookRepository } from '../../domain/repositories/book.repository';
 import { BOOK_REPOSITORY } from '../../domain/repositories/repository.tokens';
+import { AuthorName } from '../../domain/value-objects/author-name.vo';
+import { BookTitle } from '../../domain/value-objects/book-title.vo';
 
 @Injectable()
 export class UpdateBookUseCase {
@@ -12,8 +14,8 @@ export class UpdateBookUseCase {
 
   async execute(
     id: string,
-    title?: string,
-    author?: string,
+    title?: BookTitle,
+    author?: AuthorName,
     available?: boolean,
   ) {
     const book = await this.repository.findById(id);

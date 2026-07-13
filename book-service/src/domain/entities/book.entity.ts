@@ -1,8 +1,12 @@
+import { BookTitle } from '../value-objects/book-title.vo';
+import { AuthorName } from '../value-objects/author-name.vo';
+import { BookId } from '../value-objects/book-id.vo';
+
 export class Book {
   constructor(
-    public id: string | null,
-    public title: string,
-    public author: string,
+    public id: BookId | null,
+    public title: BookTitle,
+    public author: AuthorName,
     private _available: boolean = true,
   ) {}
 
@@ -26,11 +30,11 @@ export class Book {
     this._available = true;
   }
 
-  rename(title: string) {
+  rename(title: BookTitle) {
     this.title = title;
   }
 
-  changeAuthor(author: string) {
+  changeAuthor(author: AuthorName) {
     this.author = author;
   }
 }

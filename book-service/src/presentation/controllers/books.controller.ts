@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
+import { BookTitle } from '../../domain/value-objects/book-title.vo';
+import { AuthorName } from '../../domain/value-objects/author-name.vo';
 import { CreateBookDto } from '../dto/create-book.dto';
 import { CreateBookUseCase } from '../../application/use-cases/create-book.use-case';
 import { UpdateBookUseCase } from '../../application/use-cases/update-book.use-case';
@@ -49,8 +51,8 @@ export class BooksController {
   update(@Param('id') id: string, @Body() dto: UpdateBookDto) {
     return this.updateBookUseCase.execute(
       id,
-      dto.title,
-      dto.author,
+      dto.title ? new BookTitle(dto.title) : undefined,
+      dto.author ? new AuthorName(dto.author) : undefined,
       dto.available,
     );
   }
