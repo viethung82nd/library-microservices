@@ -21,6 +21,8 @@ export class ReturnBookUseCase {
 
   async execute(id: string) {
     const borrow = await this.repository.findById(id);
+    console.log(borrow);
+    console.log(borrow?.returnedAt);
 
     if (!borrow) {
       throw new NotFoundException('Borrow not found');
