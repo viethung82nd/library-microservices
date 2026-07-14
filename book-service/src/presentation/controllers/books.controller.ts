@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
+import { ReturnBookUseCase } from '../../application/use-cases/return-book.use-case';
 import { BookTitle } from '../../domain/value-objects/book-title.vo';
 import { AuthorName } from '../../domain/value-objects/author-name.vo';
 import { CreateBookDto } from '../dto/create-book.dto';
@@ -30,6 +31,7 @@ export class BooksController {
     private readonly updateBookUseCase: UpdateBookUseCase,
     private readonly deleteBookUseCase: DeleteBookUseCase,
     private readonly borrowBookUseCase: BorrowBookUseCase,
+    private readonly returnBookUseCase: ReturnBookUseCase,
   ) {}
 
   @Get()
@@ -70,5 +72,10 @@ export class BooksController {
   @MessagePattern('borrow_book')
   borrowBook(@Payload() id: string) {
     return this.borrowBookUseCase.execute(id);
+  }
+
+  @MessagePattern('return_book')
+  returnBook(@Payload() id: string) {
+    return this.returnBookUseCase.execute(id);
   }
 }

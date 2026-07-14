@@ -54,11 +54,23 @@ export class BorrowBookUseCase {
     // 4. Tạo Domain Entity
     const borrow = new Borrow(null, userId, bookId, new Date());
 
-    // 5. Lưu Borrow
-    const savedBorrow = await this.borrowRepository.save(borrow);
-
-    // 6. Update trạng thái Book
+    // 5. Đánh dấu sách đã được mượn
     await firstValueFrom(this.bookClient.send('borrow_book', bookId));
+
+    let savedBorrow;
+
+    try {
+      // 6. Lưu Borrow
+      savedBorrow = await this.borrowRepository.save(borrow);
+    } catch (error) {
+      try {
+        await firstValueFrom(this.bookClient.send('return_book', bookId));
+      } catch (rollbackError) {
+        console.error('Rollback book failed:', rollbackError);
+      }
+
+      throw error;
+    }
 
     // 7. Publish Event
     const event = new BorrowCreatedEvent(
@@ -69,6 +81,7 @@ export class BorrowBookUseCase {
     );
 
     this.notificationClient.emit('borrow.created', event);
+
     // 8. Trả kết quả
     return {
       message: 'Borrow success',

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { ReturnBookUseCase } from './application/use-cases/return-book.use-case';
 import { BooksController } from './presentation/controllers/books.controller';
 import { FindAllBooksUseCase } from './application/use-cases/find-all-books.use-case';
 import { FindBookUseCase } from './application/use-cases/find-book.use-case';
@@ -37,6 +38,7 @@ import { CreateBookUseCase } from './application/use-cases/create-book.use-case'
     UpdateBookUseCase,
     DeleteBookUseCase,
     BorrowBookUseCase,
+    ReturnBookUseCase,
   ],
 })
 export class BooksModule {}
