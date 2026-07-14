@@ -19,7 +19,7 @@ export class MongoBorrowRepository implements BorrowRepository {
       userId: borrow.userId,
       bookId: borrow.bookId,
       borrowedAt: borrow.borrowedAt,
-      returnedAt: borrow.returnedAt,
+      returnedAt: borrow.returnedAt ?? undefined,
     });
 
     return new BorrowEntity(
