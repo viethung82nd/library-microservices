@@ -4,7 +4,7 @@ export class Borrow {
     public readonly userId: string,
     public readonly bookId: string,
     public borrowedAt: Date,
-    public returnedAt?: Date,
+    public returnedAt: Date | null = null,
   ) {}
 
   returnBook() {
