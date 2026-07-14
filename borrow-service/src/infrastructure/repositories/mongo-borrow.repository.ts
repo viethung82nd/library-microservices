@@ -61,4 +61,29 @@ export class MongoBorrowRepository implements BorrowRepository {
         ),
     );
   }
+
+  async update(borrow: BorrowEntity): Promise<BorrowEntity> {
+    const updated = await this.borrowModel.findByIdAndUpdate(
+      borrow.id,
+      {
+        userId: borrow.userId,
+        bookId: borrow.bookId,
+        borrowedAt: borrow.borrowedAt,
+        returnedAt: borrow.returnedAt,
+      },
+      { new: true },
+    );
+
+    if (!updated) {
+      throw new Error('Borrow not found');
+    }
+
+    return new BorrowEntity(
+      updated._id.toString(),
+      updated.userId,
+      updated.bookId,
+      updated.borrowedAt,
+      updated.returnedAt,
+    );
+  }
 }

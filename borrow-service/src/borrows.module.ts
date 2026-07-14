@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BorrowsController } from './presentation/controllers/borrows.controller';
 
 import { BorrowBookUseCase } from './application/use-cases/borrow-book.use-case';
-
+import { ReturnBookUseCase } from './application/use-cases/return-book.use-case';
 import { MongoBorrowRepository } from './infrastructure/repositories/mongo-borrow.repository';
 import { Borrow, BorrowSchema } from './infrastructure/database/borrow.schema';
 
@@ -55,6 +55,7 @@ import { BORROW_REPOSITORY } from './domain/repositories/repository.tokens';
 
   providers: [
     BorrowBookUseCase,
+    ReturnBookUseCase,
     MongoBorrowRepository,
 
     {
