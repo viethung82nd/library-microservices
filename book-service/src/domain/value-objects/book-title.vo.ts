@@ -1,5 +1,7 @@
 export class BookTitle {
-  constructor(private readonly value: string) {
+  private readonly value: string;
+
+  constructor(value: string) {
     const title = value.trim();
 
     if (!title) {
