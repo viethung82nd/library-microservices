@@ -7,6 +7,8 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
+import type { UserDto } from '../../application/dto/user.dto';
+import type { BookDto } from '../../application/dto/book.dto';
 import type { BorrowRepository } from '../../domain/repositories/borrow.repository';
 import { BORROW_REPOSITORY } from '../../domain/repositories/repository.tokens';
 import { Borrow } from '../../domain/entities/borrow.entity';
@@ -30,17 +32,19 @@ export class BorrowBookUseCase {
 
   async execute(userId: string, bookId: string) {
     // 1. Kiểm tra User
-    console.log('Before user');
 
-    const user = await firstValueFrom(this.userClient.send('get_user', userId));
+    const user: UserDto = await firstValueFrom(
+      this.userClient.send('get_user', userId),
+    );
 
-    console.log('After user');
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     // 2. Kiểm tra Book
-    const book = await firstValueFrom(this.bookClient.send('get_book', bookId));
+    const book: BookDto = await firstValueFrom(
+      this.bookClient.send('get_book', bookId),
+    );
 
     if (!book) {
       throw new NotFoundException('Book not found');

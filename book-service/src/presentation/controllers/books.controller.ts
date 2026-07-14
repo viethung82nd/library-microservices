@@ -20,6 +20,7 @@ import { BorrowBookUseCase } from '../../application/use-cases/borrow-book.use-c
 import { FindBookUseCase } from '../../application/use-cases/find-book.use-case';
 import { FindAllBooksUseCase } from '../../application/use-cases/find-all-books.use-case';
 import { UpdateBookDto } from '../dto/update-book.dto';
+import { BookResponseDto } from '../dto/book-response.dto';
 
 @Controller('books')
 export class BooksController {
@@ -65,8 +66,15 @@ export class BooksController {
   }
 
   @MessagePattern('get_book')
-  getBook(@Payload() id: string) {
-    return this.findBookUseCase.execute(id);
+  async getBook(@Payload() id: string): Promise<BookResponseDto> {
+    const book = await this.findBookUseCase.execute(id);
+
+    return {
+      id: book.id!.getValue(),
+      title: book.title.getValue(),
+      author: book.author.getValue(),
+      available: book.available,
+    };
   }
 
   @MessagePattern('borrow_book')
